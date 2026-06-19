@@ -216,3 +216,8 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Komunitas Anak Belajar — project artifacts
+/media/
+/staticfiles/
+config/settings/local.py

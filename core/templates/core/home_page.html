@@ -1,0 +1,42 @@
+<!-- PLACEHOLDER — replaced in Phase 2 -->
+{% extends "base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block content %}
+    <article>
+        <section aria-label="Hero">
+            {% if page.hero_image %}
+                {% image page.hero_image width-1200 %}
+            {% endif %}
+            <h1>{{ page.hero_heading }}</h1>
+            <p data-lang="id">{{ page.hero_subheading_id }}</p>
+            <p data-lang="en">{{ page.hero_subheading_en }}</p>
+            {% if page.support_cta_text %}
+                <p>{{ page.support_cta_text }}</p>
+            {% endif %}
+        </section>
+
+        {% if page.intro %}
+            <section aria-label="Intro">{{ page.intro|richtext }}</section>
+        {% endif %}
+
+        {% if page.stats.all %}
+            <section aria-label="Statistik">
+                <ul>
+                    {% for stat in page.stats.all %}
+                        <li><strong>{{ stat.value }}</strong> {{ stat.label }}</li>
+                    {% endfor %}
+                </ul>
+            </section>
+        {% endif %}
+
+        <section aria-label="Laporan terbaru">
+            <h2>Laporan terbaru</h2>
+            <ul>
+                {% for post in latest_posts %}
+                    <li><a href="{% pageurl post %}">{{ post.title }}</a> — {{ post.date }}</li>
+                {% endfor %}
+            </ul>
+        </section>
+    </article>
+{% endblock %}
