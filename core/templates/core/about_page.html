@@ -1,0 +1,16 @@
+<!-- PLACEHOLDER — replaced in Phase 2 -->
+{% extends "base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block content %}
+    <article>
+        <h1>{{ page.title }}</h1>
+        {% if page.intro_image %}
+            {% image page.intro_image width-1200 %}
+        {% endif %}
+
+        <!-- Both bodies render; the ID/EN JS toggle (Phase 2) shows one at a time. -->
+        <div data-lang="id">{{ page.body_id }}</div>
+        <div data-lang="en">{{ page.body_en }}</div>
+    </article>
+{% endblock %}

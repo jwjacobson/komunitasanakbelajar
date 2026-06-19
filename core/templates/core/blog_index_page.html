@@ -1,0 +1,34 @@
+<!-- PLACEHOLDER — replaced in Phase 2 -->
+{% extends "base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block content %}
+    <article>
+        <h1>{{ page.title }}</h1>
+        {% if page.intro %}
+            <div>{{ page.intro|richtext }}</div>
+        {% endif %}
+
+        <ul>
+            {% for post in posts %}
+                <li>
+                    <a href="{% pageurl post %}">{{ post.title }}</a>
+                    <time>{{ post.date }}</time>
+                    {% if post.excerpt %}<p>{{ post.excerpt }}</p>{% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+
+        {% if posts.paginator.num_pages > 1 %}
+            <nav aria-label="Halaman">
+                {% if posts.has_previous %}
+                    <a href="?page={{ posts.previous_page_number }}">Sebelumnya</a>
+                {% endif %}
+                <span>Halaman {{ posts.number }} dari {{ posts.paginator.num_pages }}</span>
+                {% if posts.has_next %}
+                    <a href="?page={{ posts.next_page_number }}">Berikutnya</a>
+                {% endif %}
+            </nav>
+        {% endif %}
+    </article>
+{% endblock %}

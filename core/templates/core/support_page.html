@@ -1,0 +1,43 @@
+<!-- PLACEHOLDER — replaced in Phase 2 -->
+{% extends "base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block content %}
+    <article>
+        <h1>{{ page.title }}</h1>
+
+        <!-- Both bodies render; the ID/EN JS toggle (Phase 2) shows one at a time. -->
+        <div data-lang="id">{{ page.body_id }}</div>
+        <div data-lang="en">{{ page.body_en }}</div>
+
+        <section aria-label="Rekening donasi">
+            <h2>Rekening donasi</h2>
+            <dl>
+                <dt>Atas nama</dt><dd>{{ page.account_holder }}</dd>
+                <dt>Bank</dt><dd>{{ page.bank_name }}</dd>
+                <dt>Nomor rekening</dt><dd>{{ page.account_number }}</dd>
+                <dt>SWIFT</dt><dd>{{ page.swift_code }}</dd>
+            </dl>
+        </section>
+
+        <section aria-label="Kontak">
+            <h2>Kontak</h2>
+            <p>WhatsApp: {{ page.whatsapp }}</p>
+            <p>Email: {{ page.email }}</p>
+        </section>
+
+        {% if page.partners.all %}
+            <section aria-label="Mitra">
+                <h2>Mitra</h2>
+                <ul>
+                    {% for partner in page.partners.all %}
+                        <li>
+                            {% if partner.logo %}{% image partner.logo width-200 %}{% endif %}
+                            {{ partner.name }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </section>
+        {% endif %}
+    </article>
+{% endblock %}
