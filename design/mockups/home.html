@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Beranda — Komunitas Anak Belajar (mockup)</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Spectral:wght@400;500;600&family=Hanken+Grotesk:wght@400;500&display=swap');
+body{margin:0;background:#F8F3E7;font-family:'Hanken Grotesk',system-ui,sans-serif;color:#262620;}
+*{box-sizing:border-box;}
+.wrap{max-width:980px;margin:0 auto;}
+.s{font-family:'Spectral',Georgia,serif;}
+.nav{font-size:13px;color:#3a4435;}
+.btn-t{background:#C06A45;color:#F8F3E7;font-weight:500;font-size:13px;padding:7px 13px;border-radius:8px;display:inline-block;}
+.btn-g{border:0.5px solid #2F5A40;color:#2F5A40;font-weight:500;font-size:13px;padding:9px 16px;border-radius:8px;display:inline-block;}
+.btn-tl{background:#C06A45;color:#F8F3E7;font-weight:500;font-size:13px;padding:9px 16px;border-radius:8px;display:inline-block;}
+.card{background:#FCFAF3;border:0.5px solid #e3dac0;border-radius:12px;overflow:hidden;}
+.thumb{background:#dfe7d0;height:96px;display:flex;align-items:center;justify-content:center;}
+.muted{color:#8a8472;}
+.slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .55s ease;}
+.slide.on{opacity:1;}
+.dot{width:7px;height:7px;border-radius:50%;background:#F8F3E7;opacity:.5;border:none;padding:0;cursor:pointer;}
+.dot.on{opacity:1;}
+.navbtn{width:26px;height:26px;border-radius:50%;background:rgba(248,243,231,.85);border:none;color:#2F5A40;cursor:pointer;font-size:15px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:16px 22px;border-bottom:0.5px solid #e7dec5;">
+  <div style="display:flex;align-items:center;gap:9px;">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M12 21V11" stroke="#2F5A40" stroke-width="1.6" stroke-linecap="round"/><path d="M12 12C12 12 9 12 7 10C5 8 5 5 5 5C5 5 8 5 10 7C12 9 12 12 12 12Z" fill="#5E8C4E"/><path d="M12 11C12 11 14.5 11 16.5 9.2C18.5 7.4 18.5 5 18.5 5C18.5 5 16 5 14 6.8C12 8.6 12 11 12 11Z" fill="#7BA866"/></svg>
+    <div style="line-height:1.08;">
+      <div class="s" style="font-weight:600;font-size:15px;color:#2F5A40;">Komunitas Anak Belajar</div>
+      <div style="font-size:9.5px;letter-spacing:.07em;color:#8a8472;">CHILDREN LEARNING COMMUNITY</div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:14px;" class="nav">
+    <span>Tentang</span><span>Laporan</span><span>Dukung</span>
+    <span style="border:0.5px solid #b9ad8c;border-radius:20px;padding:3px 9px;font-size:11px;color:#6f6757;">ID / EN</span>
+    <span class="btn-t">Dukung kami</span>
+  </div>
+</div>
+
+<div style="display:grid;grid-template-columns:1.05fr .95fr;gap:22px;align-items:center;padding:34px 22px;">
+  <div>
+    <h1 class="s" style="font-weight:500;font-size:33px;line-height:1.12;color:#2F5A40;margin:0 0 12px;">Setiap anak berhak untuk belajar.</h1>
+    <p style="font-size:14px;line-height:1.6;margin:0 0 20px;color:#4a4636;">Pendidikan dan pendampingan untuk anak-anak di Cakung dan Ciawi, Jakarta. <span class="muted">Every child deserves the chance to learn.</span></p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;"><span class="btn-tl">Dukung kami</span><span class="btn-g">Lihat kegiatan</span></div>
+  </div>
+  <div id="hero-ss" style="position:relative;height:210px;border-radius:12px;overflow:hidden;">
+    <div class="slide on" style="background:#dfe7d0;"></div>
+    <div class="slide" style="background:#d6e2d2;"></div>
+    <div class="slide" style="background:#e4e0cd;"></div>
+    <div class="slide" style="background:#dde4dd;"></div>
+    <button class="navbtn" id="hp" aria-label="Sebelumnya" style="position:absolute;left:8px;top:50%;transform:translateY(-50%);">&lsaquo;</button>
+    <button class="navbtn" id="hn" aria-label="Berikutnya" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);">&rsaquo;</button>
+    <div id="hd" style="position:absolute;left:0;right:0;bottom:10px;display:flex;gap:6px;justify-content:center;"></div>
+  </div>
+</div>
+
+<div style="display:flex;gap:12px;flex-wrap:wrap;padding:0 22px 30px;">
+  <div style="flex:1;min-width:150px;background:#fff;border:0.5px solid #e3dac0;border-radius:10px;padding:12px 16px;"><div class="s" style="font-weight:600;font-size:22px;color:#2F5A40;">28</div><div class="muted" style="font-size:12px;">anak aktif</div></div>
+  <div style="flex:1;min-width:150px;background:#fff;border:0.5px solid #e3dac0;border-radius:10px;padding:12px 16px;"><div class="s" style="font-weight:600;font-size:22px;color:#2F5A40;">2</div><div class="muted" style="font-size:12px;">pusat belajar</div></div>
+  <div style="flex:1;min-width:150px;background:#fff;border:0.5px solid #e3dac0;border-radius:10px;padding:12px 16px;"><div class="s" style="font-weight:600;font-size:22px;color:#2F5A40;">15 thn</div><div class="muted" style="font-size:12px;">mendampingi anak</div></div>
+</div>
+
+<div style="padding:26px 22px;border-top:0.5px solid #e7dec5;">
+  <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:16px;">
+    <h2 class="s" style="font-weight:500;font-size:21px;color:#2F5A40;margin:0;">Laporan terbaru</h2>
+    <span style="font-size:13px;color:#5E8C4E;">Semua laporan &rarr;</span>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;">
+    <div class="card"><div class="thumb"></div><div style="padding:12px 14px;"><div class="muted" style="font-size:11px;margin-bottom:4px;">18 Agustus 2024</div><div class="s" style="font-weight:500;font-size:15px;line-height:1.25;color:#2F5A40;margin-bottom:6px;">Mengisi libur sekolah dengan beragam kegiatan</div><div class="muted" style="font-size:12px;line-height:1.5;">Wisata Ragunan, program menu sehat, dan bertambahnya anak belajar.</div></div></div>
+    <div class="card"><div class="thumb" style="background:#d6e2d2;"></div><div style="padding:12px 14px;"><div class="muted" style="font-size:11px;margin-bottom:4px;">Juli 2024</div><div class="s" style="font-weight:500;font-size:15px;line-height:1.25;color:#2F5A40;margin-bottom:6px;">Kunjungan ke Agroedukasi Ragunan</div><div class="muted" style="font-size:12px;line-height:1.5;">Anak-anak belajar langsung tentang hidroponik dan peternakan.</div></div></div>
+    <div class="card"><div class="thumb" style="background:#e4e0cd;"></div><div style="padding:12px 14px;"><div class="muted" style="font-size:11px;margin-bottom:4px;">Juli 2024</div><div class="s" style="font-weight:500;font-size:15px;line-height:1.25;color:#2F5A40;margin-bottom:6px;">Berbagi kebahagiaan Muharram bersama IFG</div><div class="muted" style="font-size:12px;line-height:1.5;">Anak-anak diundang ke acara santunan di Gelora Bung Karno.</div></div></div>
+  </div>
+</div>
+
+<div style="background:#2F5A40;padding:30px 22px;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;">
+  <div>
+    <h2 class="s" style="font-weight:500;font-size:21px;color:#F8F3E7;margin:0 0 4px;">Dukung pendidikan anak-anak.</h2>
+    <p style="font-size:13px;color:#cfdcc6;margin:0;">Kontribusi rutin membantu kegiatan belajar terus berjalan.</p>
+  </div>
+  <span class="btn-tl">Cara mendukung</span>
+</div>
+
+<div style="padding:18px 22px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;background:#f1ead9;">
+  <div style="display:flex;align-items:center;gap:8px;">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 21V11" stroke="#2F5A40" stroke-width="1.6" stroke-linecap="round"/><path d="M12 12C12 12 9 12 7 10C5 8 5 5 5 5C5 5 8 5 10 7C12 9 12 12 12 12Z" fill="#5E8C4E"/></svg>
+    <span class="s" style="font-size:13px;color:#2F5A40;">Komunitas Anak Belajar</span>
+  </div>
+  <div class="muted" style="font-size:11.5px;">&copy; 2026 &middot; Cakung &amp; Ciawi, Jakarta &middot; Dukung</div>
+</div>
+
+</div>
+<script>
+(function(){
+var r=document.getElementById('hero-ss');if(!r)return;
+var sl=r.querySelectorAll('.slide'),dc=document.getElementById('hd'),i=0,t=null;
+sl.forEach(function(_,n){var b=document.createElement('button');b.className='dot'+(n===0?' on':'');b.setAttribute('aria-label','Foto '+(n+1));b.onclick=function(){go(n);start();};dc.appendChild(b);});
+var dots=dc.querySelectorAll('.dot');
+function go(n){sl[i].classList.remove('on');dots[i].classList.remove('on');i=(n+sl.length)%sl.length;sl[i].classList.add('on');dots[i].classList.add('on');}
+var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function start(){if(reduce)return;stop();t=setInterval(function(){go(i+1);},4000);}
+function stop(){if(t){clearInterval(t);t=null;}}
+document.getElementById('hn').onclick=function(){go(i+1);start();};
+document.getElementById('hp').onclick=function(){go(i-1);start();};
+r.addEventListener('mouseenter',stop);r.addEventListener('mouseleave',start);
+start();
+})();
+</script>
+</body>
+</html>
