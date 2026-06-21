@@ -5,7 +5,10 @@
 <div class="reading-wrap">
     <div class="reading reading--wide">
 
-        <div class="eyebrow">Tentang</div>
+        <div class="eyebrow">
+            <span data-lang-pane="id">Tentang kami</span>
+            <span data-lang-pane="en" hidden>About us</span>
+        </div>
         {% comment %} Accessible page heading; the visible per-language heading comes from
            the body StreamField (DESIGN §6 Tentang layout). {% endcomment %}
         <h1 class="visually-hidden">{{ page.title }}</h1>
