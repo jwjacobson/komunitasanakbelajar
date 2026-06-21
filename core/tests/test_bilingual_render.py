@@ -42,6 +42,22 @@ class BilingualRenderTest(WagtailPageTestCase):
         self.assertIn('data-lang-pane="id"', html)
         self.assertIn('data-lang-pane="en"', html)
 
+    def test_home_hero_renders_both_headings(self):
+        # Both hero heading languages must ship so the client-side toggle can
+        # swap them (DESIGN §7); default ID is shown, EN is hidden until toggled.
+        home = self.tree["home"]
+        home.hero_heading_id = "Bersama membangun masa depan anak."
+        home.hero_heading_en = "Building brighter futures together."
+        home.save_revision().publish()
+
+        response = self.client.get(home.url)
+        self.assertEqual(response.status_code, 200)
+        html = response.content.decode()
+        self.assertIn("Bersama membangun masa depan anak.", html)
+        self.assertIn("Building brighter futures together.", html)
+        self.assertIn('data-lang-pane="id"', html)
+        self.assertIn('data-lang-pane="en"', html)
+
     def test_donation_card_labels_are_bilingually_static(self):
         support = self.tree["support"]
         support.account_number = "342-2792161"

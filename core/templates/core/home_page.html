@@ -7,20 +7,30 @@
     {# Hero — text left, slideshow right (DESIGN §6). #}
     <section class="hero" aria-label="Hero">
         <div class="hero__text">
-            {% if page.hero_heading %}
-                <h1 class="hero__heading">{{ page.hero_heading }}</h1>
+            {# Title + subtitle render both languages; the toggle shows one
+               (DESIGN §7). #}
+            {% if page.hero_heading_id or page.hero_heading_en %}
+                <h1 class="hero__heading">
+                    <span data-lang-pane="id">{{ page.hero_heading_id }}</span>
+                    <span data-lang-pane="en" hidden>{{ page.hero_heading_en }}</span>
+                </h1>
             {% endif %}
             {% if page.hero_subheading_id or page.hero_subheading_en %}
                 <p class="hero__sub">
-                    {{ page.hero_subheading_id }}
-                    {% if page.hero_subheading_en %}
-                        <span class="muted">{{ page.hero_subheading_en }}</span>
-                    {% endif %}
+                    <span data-lang-pane="id">{{ page.hero_subheading_id }}</span>
+                    <span data-lang-pane="en" hidden>{{ page.hero_subheading_en }}</span>
                 </p>
             {% endif %}
             <div class="hero__actions">
-                <a class="btn btn--terra" href="{% support_url %}">Dukung kami</a>
-                <a class="btn btn--green" href="{% blog_url %}">Lihat kegiatan</a>
+                {# Fixed UI strings, also driven by the toggle. #}
+                <a class="btn btn--terra" href="{% support_url %}">
+                    <span data-lang-pane="id">Dukung kami</span>
+                    <span data-lang-pane="en" hidden>Support us</span>
+                </a>
+                <a class="btn btn--green" href="{% blog_url %}">
+                    <span data-lang-pane="id">Lihat kegiatan</span>
+                    <span data-lang-pane="en" hidden>See our work</span>
+                </a>
             </div>
         </div>
 

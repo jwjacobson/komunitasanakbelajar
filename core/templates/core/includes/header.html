@@ -27,8 +27,13 @@
                 <button type="button" class="lang-toggle__btn" data-lang="en" aria-pressed="false">EN</button>
             </div>
 
+            {# CTA on every page — bilingual via the toggle. Nav links above
+               stay Indonesian by design (DESIGN §7). #}
             {% if support %}
-                <a class="btn btn--terra-sm" href="{% pageurl support %}">Dukung kami</a>
+                <a class="btn btn--terra-sm" href="{% pageurl support %}">
+                    <span data-lang-pane="id">Dukung kami</span>
+                    <span data-lang-pane="en" hidden>Support us</span>
+                </a>
             {% endif %}
         </nav>
     </div>

@@ -99,9 +99,13 @@
     }
 
     /* ----------------------------------------------------------------------
-       ID/EN language toggle: shows one server-rendered body, hides the other.
-       Default ID; choice persists in localStorage across pages. Governs body
-       prose only — nav, labels, donation-card labels stay put.
+       ID/EN language toggle: a general "show the active language" switch.
+       Any element tagged [data-lang-pane="id"|"en"] (rendered both ways
+       server-side) is shown or hidden to match the active language. This drives
+       the Tentang/Dukung bodies, the homepage hero (title, subtitle, buttons),
+       and the nav "Dukung kami" CTA. Default ID; the choice persists in
+       localStorage across pages. Nav links and donation-card labels are left
+       untagged, so they stay put.
        ---------------------------------------------------------------------- */
     var STORAGE_KEY = "kab-lang";
 

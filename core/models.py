@@ -37,7 +37,10 @@ class HomePage(Page):
 
     # The hero photo is now a slideshow backed by HeroSlide (below); the old
     # single hero_image field was removed in favour of the InlinePanel.
-    hero_heading = models.CharField(max_length=255, blank=True)
+    # Heading + subheading are paired ID/EN, driven by the client-side toggle
+    # (DESIGN §7) — only the active language shows.
+    hero_heading_id = models.CharField(max_length=255, blank=True)
+    hero_heading_en = models.CharField(max_length=255, blank=True)
     hero_subheading_id = models.TextField(blank=True)
     hero_subheading_en = models.TextField(blank=True)
     intro = RichTextField(features=RICHTEXT_FEATURES, blank=True)
@@ -46,9 +49,10 @@ class HomePage(Page):
     content_panels = Page.content_panels + [
         MultiFieldPanel(
             [
-                FieldPanel("hero_heading"),
-                FieldPanel("hero_subheading_id"),
-                FieldPanel("hero_subheading_en"),
+                FieldPanel("hero_heading_id", heading="Judul hero — Bahasa Indonesia"),
+                FieldPanel("hero_heading_en", heading="Hero heading — English"),
+                FieldPanel("hero_subheading_id", heading="Subjudul hero — Bahasa Indonesia"),
+                FieldPanel("hero_subheading_en", heading="Hero subheading — English"),
             ],
             heading="Hero",
         ),
