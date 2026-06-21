@@ -12,8 +12,8 @@
         <div class="lang-pane" data-lang-pane="id">{{ page.body_id }}</div>
         <div class="lang-pane" data-lang-pane="en" hidden>{{ page.body_en }}</div>
 
-        {# Donation card — labels are bilingually static (do not follow the
-           toggle); values are language-neutral (DESIGN §5). #}
+        {% comment %} Donation card — labels are bilingually static (do not follow the
+           toggle); values are language-neutral (DESIGN §5). {% endcomment %}
         <section class="donation-card" aria-label="Rekening donasi">
             <div class="donation-card__title">
                 Rekening donasi

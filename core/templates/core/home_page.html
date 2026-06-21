@@ -7,8 +7,8 @@
     {# Hero — text left, slideshow right (DESIGN §6). #}
     <section class="hero" aria-label="Hero">
         <div class="hero__text">
-            {# Title + subtitle render both languages; the toggle shows one
-               (DESIGN §7). #}
+            {% comment %} Title + subtitle render both languages; the toggle shows one
+               (DESIGN §7). {% endcomment %}
             {% if page.hero_heading_id or page.hero_heading_en %}
                 <h1 class="hero__heading">
                     <span data-lang-pane="id">{{ page.hero_heading_id }}</span>

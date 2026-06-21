@@ -6,8 +6,8 @@
     <div class="reading reading--wide">
 
         <div class="eyebrow">Tentang</div>
-        {# Accessible page heading; the visible per-language heading comes from
-           the body StreamField (DESIGN §6 Tentang layout). #}
+        {% comment %} Accessible page heading; the visible per-language heading comes from
+           the body StreamField (DESIGN §6 Tentang layout). {% endcomment %}
         <h1 class="visually-hidden">{{ page.title }}</h1>
 
         {% if page.intro_image %}
