@@ -23,13 +23,13 @@
             {% endif %}
             <div class="hero__actions">
                 {# Fixed UI strings, also driven by the toggle. #}
-                <a class="btn btn--terra" href="{% support_url %}">
-                    <span data-lang-pane="id">Dukung kami</span>
-                    <span data-lang-pane="en" hidden>Support us</span>
+                <a class="btn btn--terra btn--bilingual" href="{% support_url %}">
+                    <span class="btn__label" data-lang-label="id">Dukung kami</span>
+                    <span class="btn__label is-lang-hidden" data-lang-label="en" aria-hidden="true">Support us</span>
                 </a>
-                <a class="btn btn--green" href="{% blog_url %}">
-                    <span data-lang-pane="id">Lihat kegiatan</span>
-                    <span data-lang-pane="en" hidden>See our work</span>
+                <a class="btn btn--green btn--bilingual" href="{% blog_url %}">
+                    <span class="btn__label" data-lang-label="id">Lihat kegiatan</span>
+                    <span class="btn__label is-lang-hidden" data-lang-label="en" aria-hidden="true">See our work</span>
                 </a>
             </div>
         </div>

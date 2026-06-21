@@ -189,6 +189,14 @@ button { font-family: inherit; }
 }
 .btn--green:hover { background: rgba(47, 90, 64, 0.06); }
 
+/* Bilingual CTA — both language labels share one grid cell so the button
+   always sizes to the wider label and never reflows on the ID/EN toggle.
+   The inactive label is hidden with visibility (not display) so it keeps
+   occupying its space; site.js toggles `.is-lang-hidden` (DESIGN §7). */
+.btn--bilingual { display: inline-grid; }
+.btn--bilingual .btn__label { grid-area: 1 / 1; }
+.btn__label.is-lang-hidden { visibility: hidden; }
+
 /* ==========================================================================
    5. Footer (DESIGN §5)
    ========================================================================== */
@@ -245,7 +253,9 @@ button { font-family: inherit; }
     display: grid;
     grid-template-columns: 1.05fr 0.95fr;
     gap: 22px;
-    align-items: center;
+    /* Top-align the text to the image so the headline doesn't re-center
+       when the subtitle's line count differs between ID and EN (DESIGN §7). */
+    align-items: start;
     padding: 34px var(--pad-x);
 }
 .hero__heading {
@@ -259,6 +269,9 @@ button { font-family: inherit; }
 .hero__sub {
     font-size: 14px;
     line-height: 1.6;
+    /* Reserve ~2 lines (2 × line-height) so the buttons don't bounce between
+       the 1-line (EN) and 2-line (ID) subtitle states (DESIGN §7). */
+    min-height: 3.2em;
     margin: 0 0 20px;
     color: #4a4636;
 }

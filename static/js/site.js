@@ -128,10 +128,19 @@
     }
 
     function applyLang(lang) {
-        // Content panes.
+        // Content panes — swapped with the `hidden` attribute (display: none).
         var panes = document.querySelectorAll("[data-lang-pane]");
         Array.prototype.forEach.call(panes, function (pane) {
             pane.hidden = pane.getAttribute("data-lang-pane") !== lang;
+        });
+        // Bilingual CTA button labels — both share one grid cell, so the
+        // inactive one is hidden with visibility (not display) to keep the
+        // button's width stable across the toggle. Scoped to the buttons.
+        var labels = document.querySelectorAll("[data-lang-label]");
+        Array.prototype.forEach.call(labels, function (label) {
+            var on = label.getAttribute("data-lang-label") === lang;
+            label.classList.toggle("is-lang-hidden", !on);
+            label.setAttribute("aria-hidden", on ? "false" : "true");
         });
         // Toggle buttons (reflect the active language).
         var buttons = document.querySelectorAll("[data-lang-toggle] [data-lang]");
