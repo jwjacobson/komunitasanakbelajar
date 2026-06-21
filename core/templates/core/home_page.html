@@ -41,7 +41,7 @@
                         {% for slide in slides %}
                             {% if slide.image %}
                                 <div class="slideshow__slide{% if forloop.first %} is-active{% endif %}" data-slide aria-hidden="{% if forloop.first %}false{% else %}true{% endif %}">
-                                    {% image slide.image fill-900x420 alt="" %}
+                                    {% image slide.image fill-1200x800 alt="" %}
                                 </div>
                             {% endif %}
                         {% endfor %}
@@ -76,11 +76,11 @@
             <div class="teaser-grid">
                 {% for post in latest_posts %}
                     <article class="teaser-card">
-                        <a class="teaser-card__thumb" href="{% pageurl post %}">
-                            {% if post.feed_image %}
+                        {% if post.feed_image %}
+                            <a class="teaser-card__thumb" href="{% pageurl post %}">
                                 {% image post.feed_image fill-440x192 alt="" %}
-                            {% endif %}
-                        </a>
+                            </a>
+                        {% endif %}
                         <div class="teaser-card__body">
                             <div class="teaser-card__date">{{ post.date|date:"j F Y" }}</div>
                             <h3 class="teaser-card__title"><a href="{% pageurl post %}">{{ post.title }}</a></h3>

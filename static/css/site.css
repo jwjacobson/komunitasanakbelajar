@@ -266,7 +266,8 @@ button { font-family: inherit; }
 
 .slideshow {
     position: relative;
-    height: 210px;
+    aspect-ratio: 3 / 2;
+    height: auto;
     border-radius: 12px;
     overflow: hidden;
     background: var(--sage);
@@ -374,6 +375,8 @@ button { font-family: inherit; }
     overflow: hidden;
 }
 .teaser-card__thumb {
+    display: block;
+    overflow: hidden;
     background: var(--sage);
     height: 96px;
 }
