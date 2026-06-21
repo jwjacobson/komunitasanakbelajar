@@ -1,16 +1,25 @@
-<!-- PLACEHOLDER — replaced in Phase 2 -->
 {% extends "base.html" %}
 {% load wagtailcore_tags wagtailimages_tags %}
 
 {% block content %}
-    <article>
-        <h1>{{ page.title }}</h1>
+<div class="reading-wrap">
+    <div class="reading reading--wide">
+
+        <div class="eyebrow">Tentang</div>
+        {# Accessible page heading; the visible per-language heading comes from
+           the body StreamField (DESIGN §6 Tentang layout). #}
+        <h1 class="visually-hidden">{{ page.title }}</h1>
+
         {% if page.intro_image %}
-            {% image page.intro_image width-1200 %}
+            <div class="post__hero">
+                {% image page.intro_image width-1200 alt=page.title %}
+            </div>
         {% endif %}
 
-        <!-- Both bodies render; the ID/EN JS toggle (Phase 2) shows one at a time. -->
-        <div data-lang="id">{{ page.body_id }}</div>
-        <div data-lang="en">{{ page.body_en }}</div>
-    </article>
+        {# Both bodies render server-side; the ID/EN toggle shows one (DESIGN §7). #}
+        <div class="lang-pane" data-lang-pane="id">{{ page.body_id }}</div>
+        <div class="lang-pane" data-lang-pane="en" hidden>{{ page.body_en }}</div>
+
+    </div>
+</div>
 {% endblock %}

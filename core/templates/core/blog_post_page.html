@@ -1,14 +1,41 @@
-<!-- PLACEHOLDER — replaced in Phase 2 -->
 {% extends "base.html" %}
 {% load wagtailcore_tags wagtailimages_tags %}
 
 {% block content %}
-    <article>
-        <h1>{{ page.title }}</h1>
-        <time>{{ page.date }}</time>
+<div class="reading-wrap">
+    <article class="reading">
+
+        <div class="post__kicker">
+            {% if blog_index %}<a class="post__back" href="{% pageurl blog_index %}">&larr; Laporan</a> &nbsp;&middot;&nbsp; {% endif %}{{ page.date|date:"j F Y" }}
+        </div>
+        <h1 class="post__title">{{ page.title }}</h1>
+
         {% if page.feed_image %}
-            {% image page.feed_image width-1200 %}
+            <div class="post__hero">
+                {% image page.feed_image width-1200 alt=page.title %}
+            </div>
         {% endif %}
-        <div>{{ page.body }}</div>
+
+        {# Body rendered from the shared block set (DESIGN §5). #}
+        {{ page.body }}
+
+        {# Footer nav: previous (older) / archive / next (newer). #}
+        <nav class="post__nav" aria-label="Navigasi laporan">
+            {% if previous_post %}
+                <a href="{% pageurl previous_post %}">&larr; {{ previous_post.title }}</a>
+            {% else %}
+                <span class="post__nav-spacer"></span>
+            {% endif %}
+
+            {% if blog_index %}<a href="{% pageurl blog_index %}">Kembali ke Laporan</a>{% endif %}
+
+            {% if next_post %}
+                <a href="{% pageurl next_post %}">{{ next_post.title }} &rarr;</a>
+            {% else %}
+                <span class="post__nav-spacer"></span>
+            {% endif %}
+        </nav>
+
     </article>
+</div>
 {% endblock %}

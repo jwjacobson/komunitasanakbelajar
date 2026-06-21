@@ -1,0 +1,35 @@
+{% load wagtailcore_tags %}
+{# Site header / nav (DESIGN §5). `active` is one of: about / blog / support. #}
+<header class="site-header">
+    <div class="site-header__inner">
+        <a class="wordmark" href="{% if home %}{% pageurl home %}{% else %}/{% endif %}" aria-label="Beranda — Komunitas Anak Belajar">
+            {% include "core/includes/seedling.html" with size=28 %}
+            <span class="wordmark__lines">
+                <span class="wordmark__name">Komunitas Anak Belajar</span>
+                <span class="wordmark__tag">Children Learning Community</span>
+            </span>
+        </a>
+
+        <nav class="site-nav" aria-label="Navigasi utama">
+            {% if about %}
+                <a class="site-nav__link{% if active == 'about' %} is-active{% endif %}" href="{% pageurl about %}"{% if active == 'about' %} aria-current="page"{% endif %}>Tentang</a>
+            {% endif %}
+            {% if blog %}
+                <a class="site-nav__link{% if active == 'blog' %} is-active{% endif %}" href="{% pageurl blog %}"{% if active == 'blog' %} aria-current="page"{% endif %}>Laporan</a>
+            {% endif %}
+            {% if support %}
+                <a class="site-nav__link{% if active == 'support' %} is-active{% endif %}" href="{% pageurl support %}"{% if active == 'support' %} aria-current="page"{% endif %}>Dukung</a>
+            {% endif %}
+
+            {# ID/EN language toggle — persists across pages via localStorage (DESIGN §7). #}
+            <div class="lang-toggle" data-lang-toggle role="group" aria-label="Bahasa / Language">
+                <button type="button" class="lang-toggle__btn is-active" data-lang="id" aria-pressed="true">ID</button>
+                <button type="button" class="lang-toggle__btn" data-lang="en" aria-pressed="false">EN</button>
+            </div>
+
+            {% if support %}
+                <a class="btn btn--terra-sm" href="{% pageurl support %}">Dukung kami</a>
+            {% endif %}
+        </nav>
+    </div>
+</header>

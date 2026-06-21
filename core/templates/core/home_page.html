@@ -1,42 +1,97 @@
-<!-- PLACEHOLDER — replaced in Phase 2 -->
 {% extends "base.html" %}
-{% load wagtailcore_tags wagtailimages_tags %}
+{% load wagtailcore_tags wagtailimages_tags navigation %}
 
 {% block content %}
-    <article>
-        <section aria-label="Hero">
-            {% if page.hero_image %}
-                {% image page.hero_image width-1200 %}
+<div class="wrap wrap--wide">
+
+    {# Hero — text left, slideshow right (DESIGN §6). #}
+    <section class="hero" aria-label="Hero">
+        <div class="hero__text">
+            {% if page.hero_heading %}
+                <h1 class="hero__heading">{{ page.hero_heading }}</h1>
             {% endif %}
-            <h1>{{ page.hero_heading }}</h1>
-            <p data-lang="id">{{ page.hero_subheading_id }}</p>
-            <p data-lang="en">{{ page.hero_subheading_en }}</p>
-            {% if page.support_cta_text %}
-                <p>{{ page.support_cta_text }}</p>
+            {% if page.hero_subheading_id or page.hero_subheading_en %}
+                <p class="hero__sub">
+                    {{ page.hero_subheading_id }}
+                    {% if page.hero_subheading_en %}
+                        <span class="muted">{{ page.hero_subheading_en }}</span>
+                    {% endif %}
+                </p>
             {% endif %}
+            <div class="hero__actions">
+                <a class="btn btn--terra" href="{% support_url %}">Dukung kami</a>
+                <a class="btn btn--green" href="{% blog_url %}">Lihat kegiatan</a>
+            </div>
+        </div>
+
+        <div class="hero__media">
+            {% with slides=page.hero_slides.all %}
+                {% if slides %}
+                    <div class="slideshow" data-slideshow>
+                        {% for slide in slides %}
+                            {% if slide.image %}
+                                <div class="slideshow__slide{% if forloop.first %} is-active{% endif %}" data-slide aria-hidden="{% if forloop.first %}false{% else %}true{% endif %}">
+                                    {% image slide.image fill-900x420 alt="" %}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                        <button type="button" class="slideshow__arrow slideshow__arrow--prev" data-slide-prev aria-label="Foto sebelumnya">&lsaquo;</button>
+                        <button type="button" class="slideshow__arrow slideshow__arrow--next" data-slide-next aria-label="Foto berikutnya">&rsaquo;</button>
+                        <div class="slideshow__dots" data-slide-dots></div>
+                    </div>
+                {% endif %}
+            {% endwith %}
+        </div>
+    </section>
+
+    {# Stat band — above-the-fold legitimacy chips (DESIGN §5). #}
+    {% if page.stats.all %}
+        <section class="stat-band" aria-label="Statistik">
+            {% for stat in page.stats.all %}
+                <div class="stat">
+                    <div class="stat__value">{{ stat.value }}</div>
+                    <div class="stat__label">{{ stat.label }}</div>
+                </div>
+            {% endfor %}
         </section>
+    {% endif %}
 
-        {% if page.intro %}
-            <section aria-label="Intro">{{ page.intro|richtext }}</section>
-        {% endif %}
-
-        {% if page.stats.all %}
-            <section aria-label="Statistik">
-                <ul>
-                    {% for stat in page.stats.all %}
-                        <li><strong>{{ stat.value }}</strong> {{ stat.label }}</li>
-                    {% endfor %}
-                </ul>
-            </section>
-        {% endif %}
-
-        <section aria-label="Laporan terbaru">
-            <h2>Laporan terbaru</h2>
-            <ul>
+    {# Laporan terbaru — 3-card teaser (distinct from the journal list). #}
+    {% if latest_posts %}
+        <section class="section" aria-label="Laporan terbaru">
+            <div class="section__head">
+                <h2 class="section__title">Laporan terbaru</h2>
+                <a class="section__link" href="{% blog_url %}">Semua laporan &rarr;</a>
+            </div>
+            <div class="teaser-grid">
                 {% for post in latest_posts %}
-                    <li><a href="{% pageurl post %}">{{ post.title }}</a> — {{ post.date }}</li>
+                    <article class="teaser-card">
+                        <a class="teaser-card__thumb" href="{% pageurl post %}">
+                            {% if post.feed_image %}
+                                {% image post.feed_image fill-440x192 alt="" %}
+                            {% endif %}
+                        </a>
+                        <div class="teaser-card__body">
+                            <div class="teaser-card__date">{{ post.date|date:"j F Y" }}</div>
+                            <h3 class="teaser-card__title"><a href="{% pageurl post %}">{{ post.title }}</a></h3>
+                            <p class="teaser-card__excerpt">{{ post.get_excerpt }}</p>
+                        </div>
+                    </article>
                 {% endfor %}
-            </ul>
+            </div>
         </section>
-    </article>
+    {% endif %}
+
+</div>
+
+{# Green support-CTA band — the one full-bleed green section (DESIGN §6). #}
+<section class="cta-band" aria-label="Dukungan">
+    <div class="cta-band__inner">
+        <div>
+            <h2 class="cta-band__title">Dukung pendidikan anak-anak.</h2>
+            <p class="cta-band__text">Kontribusi rutin membantu kegiatan belajar terus berjalan.</p>
+        </div>
+        <a class="btn btn--terra" href="{% support_url %}">{{ page.support_cta_text|default:"Cara mendukung" }}</a>
+    </div>
+</section>
 {% endblock %}
