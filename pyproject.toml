@@ -15,6 +15,7 @@ dependencies = [
     # Phase 3 — Blogspot archive importer (HTML parsing + feed fetching).
     "beautifulsoup4>=4.12,<5.0",
     "requests>=2.31,<3.0",
+    "psycopg[binary]>=3.3.4",
 ]
 
 [dependency-groups]
