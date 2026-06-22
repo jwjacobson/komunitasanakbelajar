@@ -1,23 +1,24 @@
 # Railway deploy configuration. Full runbook in DEPLOY.md.
 #
-# Build:   Nixpacks detects uv + uv.lock and installs dependencies (uv sync)
-#          automatically. We append collectstatic so the hashed/manifested
-#          static files are baked into the image — WhiteNoise serves them at
-#          runtime. (collectstatic must run at BUILD, not pre-deploy: pre-deploy
-#          runs in a throwaway container whose filesystem the web process never
-#          sees.) Requires SECRET_KEY + DJANGO_SETTINGS_MODULE in the build env.
+# Build:   Railway builds the Dockerfile (we own the build — see the Dockerfile
+#          header for why we left Nixpacks). Dependencies are installed with uv
+#          and collectstatic is baked into the image, so the hashed/manifested
+#          static files ship inside it and WhiteNoise serves them at runtime.
+#          (collectstatic must run at BUILD, not pre-deploy: pre-deploy runs in a
+#          throwaway container whose filesystem the web process never sees.)
 #
 # Release: migrate runs as a pre-deploy step against the live Postgres, before
-#          the new version goes live. (DB isn't reachable at build time.)
+#          the new version goes live. (The DB isn't reachable at build time.) The
+#          venv is on PATH in the image, so `python` resolves without `uv run`.
 #
-# Start:   gunicorn binds the $PORT Railway injects.
+# Start:   comes from the Dockerfile CMD — gunicorn binds the $PORT Railway
+#          injects.
 
 [build]
-builder = "NIXPACKS"
-buildCommand = "uv run python manage.py collectstatic --noinput"
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
 
 [deploy]
-preDeployCommand = "uv run python manage.py migrate --noinput"
-startCommand = "uv run gunicorn config.wsgi --bind 0.0.0.0:$PORT"
+preDeployCommand = "python manage.py migrate --noinput"
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 3
