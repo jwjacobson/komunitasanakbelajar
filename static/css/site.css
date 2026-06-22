@@ -627,12 +627,12 @@ button { font-family: inherit; }
     object-fit: cover;
 }
 
-.block-quote {
+.quote {
     border-left: 3px solid var(--leaf);
     padding: 2px 0 2px 16px;
     margin: 24px 0;
 }
-.block-quote__text {
+.quote__text {
     font-family: var(--serif);
     font-style: italic;
     font-size: 17px;
@@ -640,33 +640,33 @@ button { font-family: inherit; }
     color: var(--green);
     margin: 0 0 6px;
 }
-.block-quote__attr { font-size: 12px; color: var(--muted); }
+.quote__attr { font-size: 12px; color: var(--muted); }
 
-.block-callout {
+.callout {
     background: var(--callout-bg);
     border-left: 3px solid var(--terra);
     border-radius: 10px;
     padding: 16px 18px;
     margin: 24px 0;
 }
-.block-callout__heading {
+.callout__heading {
     font-family: var(--serif);
     font-weight: 600;
     font-size: 15px;
     color: var(--green);
     margin-bottom: 6px;
 }
-.block-callout__body {
+.callout__body {
     margin: 0 0 10px;
 }
-.block-callout__body p {
+.callout__body p {
     font-size: 13px;
     line-height: 1.6;
     color: #4a4636;
     margin: 0 0 10px;
 }
-.block-callout__body p:last-child { margin-bottom: 0; }
-.block-callout__link {
+.callout__body p:last-child { margin-bottom: 0; }
+.callout__link {
     color: var(--terra);
     font-size: 13px;
     font-weight: 500;
