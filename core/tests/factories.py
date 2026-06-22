@@ -51,8 +51,12 @@ def make_site_tree():
     }
 
 
-def add_post(blog_index, title, date, *, live=True):
-    """Add a BlogPostPage child to the given index."""
+def add_post(blog_index, title, date, *, live=True, body=None, excerpt=""):
+    """Add a BlogPostPage child to the given index.
+
+    `body` may be a StreamField-assignable value (e.g. a list of
+    ``(block_type, value)`` tuples); `excerpt` sets the manual override.
+    """
     if isinstance(date, str):
         date = datetime.date.fromisoformat(date)
     post = BlogPostPage(
@@ -60,6 +64,9 @@ def add_post(blog_index, title, date, *, live=True):
         slug=title.lower().replace(" ", "-"),
         date=date,
         live=live,
+        excerpt=excerpt,
     )
+    if body is not None:
+        post.body = body
     blog_index.add_child(instance=post)
     return post

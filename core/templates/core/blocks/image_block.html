@@ -1,0 +1,8 @@
+{% load wagtailimages_tags %}
+{% comment %} Contained image, radius via CSS. Contextual alt text comes from ImageBlock
+   (SPEC §6); decorative images get empty alt. {% endcomment %}
+{% if value %}
+    <figure class="block-image">
+        {% image value width-1200 alt=value.contextual_alt_text %}
+    </figure>
+{% endif %}

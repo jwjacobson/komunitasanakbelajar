@@ -11,6 +11,8 @@ Tree (SPEC §4):
 """
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db import models
+from django.db.models.functions import ExtractYear
+from django.utils.html import strip_tags
 
 from modelcluster.fields import ParentalKey
 from wagtail.admin.panels import FieldPanel, InlinePanel, MultiFieldPanel
@@ -22,6 +24,9 @@ from .blocks import RICHTEXT_FEATURES, ContentStreamBlock
 # Number of blog posts per page on the BlogIndexPage listing.
 BLOG_POSTS_PER_PAGE = 10
 
+# Roughly how many words of the body to use for an auto-generated excerpt.
+EXCERPT_WORD_COUNT = 40
+
 
 class HomePage(Page):
     """Beranda — the site root. Singleton."""
@@ -30,14 +35,12 @@ class HomePage(Page):
     parent_page_types = ["wagtailcore.Page"]
     subpage_types = ["core.AboutPage", "core.BlogIndexPage", "core.SupportPage"]
 
-    hero_image = models.ForeignKey(
-        "wagtailimages.Image",
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name="+",
-    )
-    hero_heading = models.CharField(max_length=255, blank=True)
+    # The hero photo is now a slideshow backed by HeroSlide (below); the old
+    # single hero_image field was removed in favour of the InlinePanel.
+    # Heading + subheading are paired ID/EN, driven by the client-side toggle
+    # (DESIGN §7) — only the active language shows.
+    hero_heading_id = models.CharField(max_length=255, blank=True)
+    hero_heading_en = models.CharField(max_length=255, blank=True)
     hero_subheading_id = models.TextField(blank=True)
     hero_subheading_en = models.TextField(blank=True)
     intro = RichTextField(features=RICHTEXT_FEATURES, blank=True)
@@ -46,12 +49,21 @@ class HomePage(Page):
     content_panels = Page.content_panels + [
         MultiFieldPanel(
             [
-                FieldPanel("hero_image"),
-                FieldPanel("hero_heading"),
-                FieldPanel("hero_subheading_id"),
-                FieldPanel("hero_subheading_en"),
+                FieldPanel("hero_heading_id", heading="Judul hero — Bahasa Indonesia"),
+                FieldPanel("hero_heading_en", heading="Hero heading — English"),
+                FieldPanel("hero_subheading_id", heading="Subjudul hero — Bahasa Indonesia"),
+                FieldPanel("hero_subheading_en", heading="Hero subheading — English"),
             ],
             heading="Hero",
+        ),
+        InlinePanel(
+            "hero_slides",
+            label="Foto hero (slideshow)",
+            help_text=(
+                "Tambahkan 3–6 foto untuk slideshow hero. Foto berganti "
+                "otomatis di halaman depan."
+            ),
+            max_num=6,
         ),
         FieldPanel("intro"),
         InlinePanel("stats", label="Statistik", max_num=6),
@@ -79,6 +91,25 @@ class HomeStat(Orderable):
     ]
 
 
+class HeroSlide(Orderable):
+    """One photo in the homepage hero slideshow (image only — no caption)."""
+
+    page = ParentalKey(
+        HomePage, on_delete=models.CASCADE, related_name="hero_slides"
+    )
+    image = models.ForeignKey(
+        "wagtailimages.Image",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
+
+    panels = [
+        FieldPanel("image"),
+    ]
+
+
 class AboutPage(Page):
     """Tentang — who we are / what we do. Singleton, bilingual toggle."""
 
@@ -98,8 +129,8 @@ class AboutPage(Page):
 
     content_panels = Page.content_panels + [
         FieldPanel("intro_image"),
-        FieldPanel("body_id", heading="Konten (Bahasa Indonesia)"),
-        FieldPanel("body_en", heading="Content (English)"),
+        FieldPanel("body_id", heading="Isi — Bahasa Indonesia"),
+        FieldPanel("body_en", heading="Content — English"),
     ]
 
 
@@ -123,7 +154,9 @@ class BlogIndexPage(Page):
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
-        paginator = Paginator(self.get_posts(), BLOG_POSTS_PER_PAGE)
+        all_posts = self.get_posts()
+
+        paginator = Paginator(all_posts, BLOG_POSTS_PER_PAGE)
         page = request.GET.get("page")
         try:
             posts = paginator.page(page)
@@ -132,6 +165,21 @@ class BlogIndexPage(Page):
         except EmptyPage:
             posts = paginator.page(paginator.num_pages)
         context["posts"] = posts
+        # Compact, elided page list for the numbered pagination control.
+        context["page_range"] = list(
+            paginator.get_elided_page_range(
+                posts.number, on_each_side=1, on_ends=1
+            )
+        )
+        context["pagination_ellipsis"] = paginator.ELLIPSIS
+
+        # Legitimacy signals shown in the header (SPEC §5): a live count of
+        # published reports and the founding year ("sejak YYYY"), derived from
+        # the oldest published post.
+        context["post_count"] = all_posts.count()
+        context["founding_year"] = (
+            all_posts.aggregate(year=models.Min(ExtractYear("date")))["year"]
+        )
         return context
 
 
@@ -161,6 +209,44 @@ class BlogPostPage(Page):
         FieldPanel("body"),
     ]
 
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        siblings = BlogPostPage.objects.sibling_of(self).live()
+        # "Previous" reads as the older report, "next" as the newer one — the
+        # reader walks the chronicle forward/back in time (DESIGN §5 post nav).
+        context["previous_post"] = (
+            siblings.filter(date__lt=self.date).order_by("-date").first()
+        )
+        context["next_post"] = (
+            siblings.filter(date__gt=self.date).order_by("date").first()
+        )
+        context["blog_index"] = self.get_parent().specific
+        return context
+
+    def _body_plain_text(self):
+        """Flatten the textual body blocks (heading/paragraph/quote) to plain
+        text, formatting stripped. Image/gallery blocks contribute nothing."""
+        parts = []
+        for block in self.body:
+            if block.block_type == "heading":
+                parts.append(str(block.value))
+            elif block.block_type == "paragraph":
+                parts.append(strip_tags(block.value.source))
+            elif block.block_type == "quote":
+                parts.append(block.value.get("text", ""))
+        return " ".join(part for part in parts if part).split()
+
+    def get_excerpt(self):
+        """The hand-written excerpt when set, otherwise an auto-summary of the
+        first ~40 words of the body (SPEC §5)."""
+        if self.excerpt.strip():
+            return self.excerpt
+        words = self._body_plain_text()
+        summary = " ".join(words[:EXCERPT_WORD_COUNT])
+        if len(words) > EXCERPT_WORD_COUNT:
+            summary += "…"
+        return summary
+
 
 class SupportPage(Page):
     """Dukung — why give + bank details + partners. Singleton, bilingual toggle."""
@@ -184,8 +270,8 @@ class SupportPage(Page):
     email = models.EmailField(blank=True)
 
     content_panels = Page.content_panels + [
-        FieldPanel("body_id", heading="Konten (Bahasa Indonesia)"),
-        FieldPanel("body_en", heading="Content (English)"),
+        FieldPanel("body_id", heading="Isi — Bahasa Indonesia"),
+        FieldPanel("body_en", heading="Content — English"),
         MultiFieldPanel(
             [
                 FieldPanel("account_holder"),

@@ -1,43 +1,96 @@
-<!-- PLACEHOLDER — replaced in Phase 2 -->
 {% extends "base.html" %}
 {% load wagtailcore_tags wagtailimages_tags %}
 
 {% block content %}
-    <article>
-        <h1>{{ page.title }}</h1>
+<div class="reading-wrap">
+    <div class="reading">
 
-        <!-- Both bodies render; the ID/EN JS toggle (Phase 2) shows one at a time. -->
-        <div data-lang="id">{{ page.body_id }}</div>
-        <div data-lang="en">{{ page.body_en }}</div>
+        <div class="eyebrow">
+            <span data-lang-pane="id">Dukung kami</span>
+            <span data-lang-pane="en" hidden>Support our work</span>
+        </div>
+        <h1 class="visually-hidden">{{ page.title }}</h1>
 
-        <section aria-label="Rekening donasi">
-            <h2>Rekening donasi</h2>
-            <dl>
-                <dt>Atas nama</dt><dd>{{ page.account_holder }}</dd>
-                <dt>Bank</dt><dd>{{ page.bank_name }}</dd>
-                <dt>Nomor rekening</dt><dd>{{ page.account_number }}</dd>
-                <dt>SWIFT</dt><dd>{{ page.swift_code }}</dd>
-            </dl>
+        {# Toggling narrative — both bodies ship, JS shows one (DESIGN §7). #}
+        <div class="lang-pane" data-lang-pane="id">{{ page.body_id }}</div>
+        <div class="lang-pane" data-lang-pane="en" hidden>{{ page.body_en }}</div>
+
+        {% comment %} Donation card — labels are bilingually static (do not follow the
+           toggle); values are language-neutral (DESIGN §5). {% endcomment %}
+        <section class="donation-card" aria-label="Rekening donasi">
+            <div class="donation-card__title">
+                Rekening donasi
+                <span class="donation-card__title-note">&middot; Bank transfer</span>
+            </div>
+            {% if page.account_holder %}
+                <div class="donation-row">
+                    <div class="donation-row__label">Pemegang rekening &middot; Account holder</div>
+                    <div class="donation-row__value">{{ page.account_holder }}</div>
+                </div>
+            {% endif %}
+            {% if page.bank_name %}
+                <div class="donation-row">
+                    <div class="donation-row__label">Bank</div>
+                    <div class="donation-row__value">{{ page.bank_name }}</div>
+                </div>
+            {% endif %}
+            {% if page.account_number %}
+                <div class="donation-row">
+                    <div class="donation-row__label">No. rekening &middot; Account no.</div>
+                    <div class="donation-row__value">{{ page.account_number }}</div>
+                </div>
+            {% endif %}
+            {% if page.swift_code %}
+                <div class="donation-row">
+                    <div class="donation-row__label">SWIFT</div>
+                    <div class="donation-row__value">{{ page.swift_code }}</div>
+                </div>
+            {% endif %}
         </section>
 
-        <section aria-label="Kontak">
-            <h2>Kontak</h2>
-            <p>WhatsApp: {{ page.whatsapp }}</p>
-            <p>Email: {{ page.email }}</p>
-        </section>
+        {# Contact — lives only here, not in the footer (SPEC §5). #}
+        {% if page.whatsapp or page.email %}
+            <div class="contact-row">
+                {% if page.whatsapp %}
+                    <div>
+                        <div class="contact-row__label">WhatsApp</div>
+                        <div class="contact-row__value">{{ page.whatsapp }}</div>
+                    </div>
+                {% endif %}
+                {% if page.email %}
+                    <div>
+                        <div class="contact-row__label">Email</div>
+                        <div class="contact-row__value"><a href="mailto:{{ page.email }}">{{ page.email }}</a></div>
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
 
+        {# Partners / social proof (DESIGN §5). #}
         {% if page.partners.all %}
-            <section aria-label="Mitra">
-                <h2>Mitra</h2>
-                <ul>
+            <section class="partners" aria-label="Mitra">
+                <div class="partners__title">
+                    Mitra kami
+                    <span class="partners__title-note">&middot; Partners</span>
+                </div>
+                <p class="partners__note">Organisasi yang pernah bekerja sama dengan kami.</p>
+                <div class="partners__row">
                     {% for partner in page.partners.all %}
-                        <li>
-                            {% if partner.logo %}{% image partner.logo width-200 %}{% endif %}
-                            {{ partner.name }}
-                        </li>
+                        <div class="partner">
+                            <div class="partner__logo">
+                                {% if partner.logo %}
+                                    {% image partner.logo max-80x40 alt=partner.name %}
+                                {% else %}
+                                    <span>{{ partner.name }}</span>
+                                {% endif %}
+                            </div>
+                            <div class="partner__name">{{ partner.name }}</div>
+                        </div>
                     {% endfor %}
-                </ul>
+                </div>
             </section>
         {% endif %}
-    </article>
+
+    </div>
+</div>
 {% endblock %}

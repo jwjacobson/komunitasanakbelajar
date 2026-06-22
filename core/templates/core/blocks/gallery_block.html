@@ -1,0 +1,13 @@
+{% load wagtailimages_tags %}
+{# Responsive grid of photos (DESIGN §5). Each item is an ImageBlock value. #}
+{% if value %}
+    <div class="block-gallery">
+        <div class="block-gallery__grid">
+            {% for img in value %}
+                {% if img %}
+                    {% image img width-600 alt=img.contextual_alt_text %}
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}

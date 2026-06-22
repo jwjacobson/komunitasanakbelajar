@@ -1,0 +1,15 @@
+{% load wagtailcore_tags %}
+{% comment %} Minimal footer (DESIGN §5 / SPEC §5): wordmark, copyright, Dukung link.
+   No settings object — contact lives only on the Support page. {% endcomment %}
+<footer class="site-footer">
+    <div class="site-footer__inner">
+        <span class="site-footer__brand">
+            {% include "core/includes/seedling.html" with size=20 %}
+            Komunitas Anak Belajar
+        </span>
+        <span class="site-footer__meta">
+            &copy; {% now "Y" %} &middot; Cakung &amp; Ciawi, Jakarta
+            {% if support %}&middot; <a href="{% pageurl support %}">Dukung</a>{% endif %}
+        </span>
+    </div>
+</footer>

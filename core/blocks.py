@@ -23,6 +23,7 @@ class QuoteBlock(blocks.StructBlock):
     class Meta:
         icon = "openquote"
         label = "Kutipan"
+        template = "core/blocks/quote_block.html"
 
 
 class CalloutBlock(blocks.StructBlock):
@@ -34,18 +35,24 @@ class CalloutBlock(blocks.StructBlock):
     class Meta:
         icon = "warning"
         label = "Sorotan"
+        template = "core/blocks/callout_block.html"
 
 
 class ContentStreamBlock(blocks.StreamBlock):
     """The shared body block set used by every content StreamField."""
 
-    heading = blocks.CharBlock(icon="title", label="Sub-judul")
-    paragraph = blocks.RichTextBlock(
-        features=RICHTEXT_FEATURES, icon="pilcrow", label="Paragraf"
+    heading = blocks.CharBlock(
+        icon="title", label="Sub-judul",
+        template="core/blocks/heading_block.html",
     )
-    image = ImageBlock()
+    paragraph = blocks.RichTextBlock(
+        features=RICHTEXT_FEATURES, icon="pilcrow", label="Paragraf",
+        template="core/blocks/paragraph_block.html",
+    )
+    image = ImageBlock(template="core/blocks/image_block.html")
     gallery = blocks.ListBlock(
-        ImageBlock(), icon="image", label="Galeri"
+        ImageBlock(), icon="image", label="Galeri",
+        template="core/blocks/gallery_block.html",
     )
     quote = QuoteBlock()
     callout = CalloutBlock()

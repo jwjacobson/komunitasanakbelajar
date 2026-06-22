@@ -1,34 +1,70 @@
-<!-- PLACEHOLDER — replaced in Phase 2 -->
 {% extends "base.html" %}
 {% load wagtailcore_tags wagtailimages_tags %}
 
 {% block content %}
-    <article>
-        <h1>{{ page.title }}</h1>
+<div class="wrap">
+
+    {# Header — title, RichText intro, live count + founding year (DESIGN §6). #}
+    <header class="page-header">
+        <h1 class="page-header__title">{{ page.title }}</h1>
         {% if page.intro %}
-            <div>{{ page.intro|richtext }}</div>
+            <div class="page-header__intro">{{ page.intro|richtext }}</div>
         {% endif %}
+        <p class="page-header__meta">
+            {{ post_count }} laporan{% if founding_year %} &middot; sejak {{ founding_year }}{% endif %}
+        </p>
+    </header>
 
-        <ul>
-            {% for post in posts %}
-                <li>
-                    <a href="{% pageurl post %}">{{ post.title }}</a>
-                    <time>{{ post.date }}</time>
-                    {% if post.excerpt %}<p>{{ post.excerpt }}</p>{% endif %}
-                </li>
+    {# Journal-style list with year markers (DESIGN §5). #}
+    <div class="journal">
+        {% for post in posts %}
+            {% ifchanged post.date.year %}
+                <div class="journal__year">
+                    <span class="journal__year-label">{{ post.date.year }}</span>
+                    <span class="journal__year-rule"></span>
+                </div>
+            {% endifchanged %}
+
+            <article class="entry">
+                <a class="entry__thumb" href="{% pageurl post %}" aria-hidden="true" tabindex="-1">
+                    {% if post.feed_image %}
+                        {% image post.feed_image fill-300x208 alt="" %}
+                    {% endif %}
+                </a>
+                <div class="entry__content">
+                    <div class="entry__date">{{ post.date|date:"j F Y" }}</div>
+                    <h2 class="entry__title"><a href="{% pageurl post %}">{{ post.title }}</a></h2>
+                    <p class="entry__excerpt">{{ post.get_excerpt }}</p>
+                    <a class="entry__more" href="{% pageurl post %}">Baca selengkapnya &rarr;</a>
+                </div>
+            </article>
+        {% empty %}
+            <p class="page-header__intro">Belum ada laporan.</p>
+        {% endfor %}
+    </div>
+
+    {# Numbered pagination (DESIGN §5). #}
+    {% if posts.paginator.num_pages > 1 %}
+        <nav class="pagination" aria-label="Halaman laporan">
+            {% if posts.has_previous %}
+                <a class="pagination__item" href="?page={{ posts.previous_page_number }}" aria-label="Halaman sebelumnya">&larr;</a>
+            {% endif %}
+
+            {% for num in page_range %}
+                {% if num == pagination_ellipsis %}
+                    <span class="pagination__item" style="border:none;">&hellip;</span>
+                {% elif num == posts.number %}
+                    <span class="pagination__item is-active" aria-current="page">{{ num }}</span>
+                {% else %}
+                    <a class="pagination__item" href="?page={{ num }}">{{ num }}</a>
+                {% endif %}
             {% endfor %}
-        </ul>
 
-        {% if posts.paginator.num_pages > 1 %}
-            <nav aria-label="Halaman">
-                {% if posts.has_previous %}
-                    <a href="?page={{ posts.previous_page_number }}">Sebelumnya</a>
-                {% endif %}
-                <span>Halaman {{ posts.number }} dari {{ posts.paginator.num_pages }}</span>
-                {% if posts.has_next %}
-                    <a href="?page={{ posts.next_page_number }}">Berikutnya</a>
-                {% endif %}
-            </nav>
-        {% endif %}
-    </article>
+            {% if posts.has_next %}
+                <a class="pagination__item" href="?page={{ posts.next_page_number }}">Berikutnya &rarr;</a>
+            {% endif %}
+        </nav>
+    {% endif %}
+
+</div>
 {% endblock %}

@@ -1,6 +1,6 @@
 # Komunitas Anak Belajar — Build Specification
 
-**Status:** locked (v1.0)
+**Status:** locked (v1.1 — added migration phase + journal-style index)
 **Purpose:** greenfield build spec for a Wagtail website, to be executed by Claude Code.
 **Domain:** childrenlearning.org
 
@@ -29,11 +29,12 @@ Project **legitimacy** to attract donors — specifically, to make it plausible 
 
 - Five-page Wagtail site (see IA).
 - Selective bilingual support (Indonesian + English) via a simple front-end toggle on structural pages.
-- A flat, reverse-chronological blog ("Laporan kegiatan" / activity reports).
+- A reverse-chronological **journal-style** report index ("Laporan kegiatan") — single-column entries with image, date, title, and a generous auto-excerpt; year markers; pagination. (Not a card grid.)
 - Photo-forward design using the charity's own photography.
 - Admin interface in Indonesian.
 - Cloudflare R2 for media storage; Railway for app + managed Postgres.
 - Donation info presented as static bank-transfer details + contact (no payment processing).
+- **Migration of the full historical Blogspot archive** (back to 2009) into `BlogPostPage` records — see §13. A core deliverable, not optional: the populated chronicle *is* the legitimacy asset.
 
 ### Explicitly OUT of scope (do not build)
 
@@ -41,7 +42,6 @@ Project **legitimacy** to attract donors — specifically, to make it plausible 
 - **No `wagtail-localize` / full Wagtail i18n.** Do not duplicate the page tree per locale. Bilingual support is achieved with paired language fields + a JS toggle (see §7). This is deliberate — the sole editor must not face a per-locale tree.
 - **No blog taxonomy** (no categories/tags). Flat reverse-chron list only.
 - No user accounts, comments, newsletter signup, or search (search may be a v2 addition).
-- No automated migration of old Blogspot content. A handful of past reports may be re-entered manually as seed content.
 
 ---
 
@@ -112,13 +112,16 @@ App name suggestion: `home` for HomePage + site-wide pieces, `blog` for the inde
 
 - `intro` — RichTextField, optional.
 - `get_context`: paginated list of child `BlogPostPage`, date desc.
+- **Presentation: journal-style single-column list** (not a card grid). Each entry: `feed_image` thumbnail, `date`, `title`, a generous excerpt, and a "Baca selengkapnya" link. Group entries under **year markers** (e.g. "2024") as the list descends — this renders the archive as a chronicle and is the visible proof-of-consistency.
+- Header shows a live **count** ("N laporan") and the founding year ("sejak YYYY") — both legitimacy signals; count derives from published posts.
+- Paginate (~10 per page).
 - `subpage_types = ['BlogPostPage']`
 
 ### `BlogPostPage` (child of BlogIndexPage) — a report
 
 - `date` — DateField.
 - `feed_image` — FK Image, optional (used on index cards + post header).
-- `excerpt` — TextField, optional (index card summary).
+- `excerpt` — TextField, optional. **Auto-generated** from the first ~40 words of `body` (formatting stripped) when left blank; the field acts as a manual override when Debby wants to hand-write the summary. Shown in the journal-list entry.
 - `body` — StreamField (shared block set, §6). **Single field** — Debby writes bilingual content however she likes (her natural habit is to stack the full English text then the full Indonesian text). Do not impose a language mechanism here.
 - `subpage_types = []`
 
@@ -234,7 +237,34 @@ Pair with the green seedling mark. (Obtain a clean/vector logo from Debby; do no
 
 ---
 
-## 12. Decisions (locked)
+## 12. Build phases
+
+The build proceeds in ordered, separately-promptable phases, each ending in review:
+
+1. **Phase 1 — Backend skeleton** *(complete)*: project scaffold, page models, block set, admin in Indonesian, tests.
+2. **Phase 2 — Templates + design + bilingual toggle**: the design system (§9) and all page templates, including the journal-style Laporan index and the ID/EN toggle. Built to match approved mockups.
+3. **Phase 3 — Content migration**: import the full historical Blogspot archive into `BlogPostPage` records (§13). Runs *before* deploy so the site launches already populated, not empty.
+4. **Phase 4 — Deployment**: R2 media, Railway app + Postgres, env vars, backups, domain (§8, §10).
+
+---
+
+## 13. Content migration (Phase 3)
+
+Import the full archive from the historical reports blog — `cakungchildrencommunity.blogspot.com` — back to 2009. The populated chronicle is the project's primary legitimacy asset, so this is a core deliverable.
+
+**Approach — feed-first (no admin access required).** Blogspot exposes a public feed at `.../feeds/posts/default` with `?max-results=` and `?start-index=` for pagination. By default it returns *full* post content as structured data (title, publish date, full body HTML, labels). A Wagtail management command pages through the feed and creates one `BlogPostPage` per post, mapping: published date → `date`, title → `title`, body HTML → `body` (converted to StreamField blocks — at minimum a `paragraph` block; promote `<img>` to `image` / `gallery` blocks where feasible).
+
+- **No dependency on Debby's login.** The feed is public; her admin access is only a fallback for anything the feed misses.
+- **First step:** hit the feed URL and confirm it is live and returns full (not summary-only) content. If the blog was set to "summary only", fall back to fetching each post's HTML page (URLs come from the feed) and extracting the `.post-body` element.
+- **Images:** download each image from its `googleusercontent` / Blogger CDN URL and re-upload to Wagtail Images (→ R2). Expect a few of the oldest (2009–2011) images to be already dead on Google's side — unrecoverable, but post *text* always survives via the feed.
+- **Cleanup pass:** strip Blogger HTML cruft (inline styles, the `Diposting oleh… / Tidak ada komentar` footer boilerplate, share widgets) before saving.
+- **Bilingual content imports as-is:** old posts are stacked English-then-Indonesian, which maps directly onto the free-form `body` field — no transformation needed.
+- **Scope:** import everything; unpublish duds afterward rather than curating up front (density is the point). Posts import as **published** with their original dates.
+- **Second blog out of scope:** `cakungchildrencreation.blogspot.com` (crafts/products) is not imported in v1.
+
+---
+
+## 14. Decisions (locked)
 
 1. **Toggle-page content fields:** paired **StreamFields** (`body_id`/`body_en`) on About and Support — consistent with the blog, supports inline images.
 2. **Version pinning:** **Wagtail 7.4 LTS + Django 5.2 LTS** (not Django 6.0 non-LTS).
@@ -243,3 +273,6 @@ Pair with the green seedling mark. (Obtain a clean/vector logo from Debby; do no
 5. **No `SiteSettings` object.** Minimal footer (copyright + link to Dukung); contact lives only on Support. Fewer concepts for the editor.
 6. **Search:** deferred to v2.
 
+---
+
+*Next step after this spec is locked: write the Claude Code prompt (models, block set, settings, palette, page tree, deploy config all flow from the decisions above).*

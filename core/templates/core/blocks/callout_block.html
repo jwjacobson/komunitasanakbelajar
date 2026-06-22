@@ -1,0 +1,8 @@
+{% load navigation %}
+{% comment %} Wheat-fill callout with terracotta edge + giving link (DESIGN §5). The
+   terracotta ties this financial-transparency element to the donate action. {% endcomment %}
+<div class="callout">
+    <div class="callout__heading">{{ value.heading }}</div>
+    <div class="callout__body">{{ value.body }}</div>
+    <a class="callout__link" href="{% support_url %}">Dukung kami &rarr;</a>
+</div>

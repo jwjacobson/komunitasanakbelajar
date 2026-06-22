@@ -1,0 +1,7 @@
+{# Pull quote — leaf rule + Spectral italic (DESIGN §5). #}
+<blockquote class="quote">
+    <p class="quote__text">{{ value.text }}</p>
+    {% if value.attribution %}
+        <div class="quote__attr">&mdash; {{ value.attribution }}</div>
+    {% endif %}
+</blockquote>
