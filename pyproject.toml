@@ -7,8 +7,10 @@ dependencies = [
     "django>=5.2,<5.3",
     "wagtail>=7.4,<7.5",
     "dj-database-url>=2.3,<3.0",
-    # Declared now, wired up in Phase 3 (deployment / media storage).
+    # Deployment / media storage (Phase 4): media -> Cloudflare R2 via
+    # django-storages, hashed static files served by WhiteNoise.
     "django-storages[s3]>=1.14,<2.0",
+    "whitenoise>=6.8,<7.0",
     "gunicorn>=23.0,<24.0",
     # Phase 3 — Blogspot archive importer (HTML parsing + feed fetching).
     "beautifulsoup4>=4.12,<5.0",
