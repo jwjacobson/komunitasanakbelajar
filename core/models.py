@@ -190,6 +190,11 @@ class BlogPostPage(Page):
     subpage_types = []
 
     date = models.DateField("Tanggal")
+    # Idempotency key for the Blogspot archive importer (SPEC §13): the stable
+    # Blogger entry id (e.g. "tag:blogger.com,1999:blog-…post-784944707…").
+    # The importer upserts on this so re-runs update posts instead of
+    # duplicating them. Left blank for hand-authored posts.
+    blogger_post_id = models.CharField(max_length=255, blank=True, db_index=True)
     feed_image = models.ForeignKey(
         "wagtailimages.Image",
         null=True,
