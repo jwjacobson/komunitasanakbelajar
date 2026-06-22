@@ -1,0 +1,44 @@
+# Keep the build context small and clean. The image installs deps from
+# pyproject.toml + uv.lock and collects static at build, so dev cruft, the local
+# venv, the SQLite DB, local media, and secrets must not leak in.
+
+# Python / venv
+.venv
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Local database (dev only — prod uses Railway Postgres)
+db.sqlite3
+db.sqlite3-journal
+
+# Local media (prod media lives in R2) and collected static (rebuilt in-image)
+media/
+staticfiles/
+
+# Secrets / local env
+.env
+.env.*
+.envrc
+config/settings/local.py
+
+# Git & CI
+.git
+.gitignore
+
+# Test / tooling caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Editor / OS cruft
+.vscode/
+.idea/
+.DS_Store
+
+# Docs & non-runtime project artifacts (not needed in the image)
+*.md
+design/
